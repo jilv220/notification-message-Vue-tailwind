@@ -1,0 +1,85 @@
+<html>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+</head>
+
+<body>
+  <div id="app">
+    <div class="font-bold text-xl py-4">Notification Center</div>
+    <notification-message>Good morning</notification-message>
+    <notification-message type="error" header="Oh no!">
+      <p>Your flight has been <b>canceled</b>!</p>
+    </notification-message>
+
+    <notification-message type="success" header="Oh yeah!">
+      <p>Your flight is on time.</p>
+    </notification-message>
+  </div>
+</body>
+
+<script src="https://unpkg.com/vue"></script>
+
+<script type="text/x-template" id="notification-message-template">
+  <div v-if="hidden === false">
+    <!-- Switch based on type -->
+    <div class="container border-2" :class="renderByType">
+  
+      <div class="flex items-stretch py-2">
+        <span class="flex-auto font-bold text-lg">{{ this.header }}</span>
+        <svg xmlns="http://www.w3.org/2000/svg" class="flex-end mr-4 h-6 w-6" fill="none" viewBox="0 0 24 24"
+          stroke="currentColor" @click="hide">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </div>
+      <p>
+        <slot></slot>
+      </p>
+    </div>
+  </div>
+</script>
+
+<script>
+  Vue.component("notification-message", {
+    template: '#notification-message-template',
+    props: {
+      type: {
+        type: String,
+        default: "warning"
+      },
+      header: {
+        type: String,
+        default: "Oh whatever!"
+      },
+    },
+    computed: {
+      renderByType: function () {
+        let r = this.type === 'error' ? 'border-red-100 bg-red-50 text-red-800' :
+          this.type === 'warning' ? 'border-yellow-100 bg-yellow-50 text-yellow-800' :
+            'border-green-100 bg-green-50 text-green-800';
+        //console.log(r);
+        return r;
+      }
+    },
+    data() {
+      return {
+        hidden: false
+      };
+    },
+    methods: {
+      hide() {
+        this.hidden = true;
+      }
+    }
+  })
+  new Vue({
+      el: '#app',
+      data: {
+
+      }
+    })
+</script>
+
+</html>
